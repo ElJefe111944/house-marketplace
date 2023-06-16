@@ -6,6 +6,7 @@ import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from '../firebase.config';
 import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRightIcon.svg';
 import VisibilityIcon from '../assets/svg/visibilityIcon.svg';
+import OAuth from '../components/OAuth';
 
 
 function Signup() {
@@ -82,6 +83,7 @@ function Signup() {
           </div>
         </form>
         {/* Google OAuth */}
+        <OAuth />
 
         <Link to='/profile' className='registerLink'>Sign In Instead</Link>
       </div>
