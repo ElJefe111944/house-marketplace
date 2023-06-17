@@ -10,6 +10,19 @@ function ListingItem({ listing, id }) {
     <li className='categoryListing'>
         <Link to={`/category/${listing.type}/${id}`} className='categoryListingLink'>
             <img src={listing.imageUrls[0]} alt={listing.name} className='categoryListingImg' />
+            <div className="categoryListingDetails">
+            <p className='categoryListingPrice'>
+            £
+            {listing.offer
+              ? listing.discountedPrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',') // add commas
+              : listing.regularPrice
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            {listing.type === 'rent' && ' / Month'}
+          </p>
+            </div>
         </Link>
     </li>
   )
