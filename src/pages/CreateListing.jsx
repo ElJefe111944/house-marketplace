@@ -64,9 +64,36 @@ function CreateListing() {
 
     const onSubmit = (e) => {
         e.preventDefault();
+
+        console.log(formData);
     };
 
     const onMutate = (e) => {
+        let boolean = null;
+        // input btns set to true
+        if(e.target.value === 'true'){
+            boolean = true;
+        };
+        // input btns set to false
+        if(e.target.value === 'false'){
+            boolean = false;
+        };
+
+        // files
+        if(e.target.files){
+            setFormData((prevState) => ({
+                ...prevState,
+                images: e.target.files
+            }));
+        };
+
+        // text/booleans/numbers
+        if(!e.target.files){
+            setFormData((prevState) => ({
+                ...prevState,
+                [e.target.id]: boolean ?? e.target.value // if no value set to null
+            }))
+        };
 
     };
 
@@ -168,7 +195,7 @@ function CreateListing() {
                       </button>
                   </div>
                   {/* furnished */}
-                  <label className='formLabel' htmlFor="formButtons">Parking spot</label>
+                  <label className='formLabel' htmlFor="formButtons">Furnished</label>
                   <div className="formButtons">
                       <button
                           className={furnished ? 'formButtonActive' : 'formButton'}
@@ -283,7 +310,7 @@ function CreateListing() {
                           />
                       </>
                   )}
-                  {/* image */}
+                  {/* images */}
                   <label className='formLabel'>Images</label>
                   <p className='imagesInfo'>
                       The first image will be the cover (max 6).
