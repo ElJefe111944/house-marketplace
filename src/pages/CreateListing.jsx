@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase.config';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
@@ -153,17 +154,32 @@ function CreateListing() {
             });
         };
 
-    const imgUrls = await Promise.all(
-        [...images].map((image) => storeImage(image))
-    ).catch(() => {
-        setLoading(false);
-        toast.error('Images not uploaded');
-        return;
-    });
-    
-        console.log(imgUrls);
+        const imgUrls = await Promise.all(
+            [...images].map((image) => storeImage(image))
+        ).catch(() => {
+            setLoading(false);
+            toast.error('Images not uploaded');
+            return;
+        });
+        
+        const formDataCopy = {
+            ...formData,
+            imgUrls,
+            geolocation,
+            timestamp: serverTimestamp()
+        };
+
+        delete formDataCopy.images;
+        delete formDataCopy.address;
+        location && (formDataCopy.location = location);
+        !formDataCopy.offer && delete formDataCopy.discountedPrice;
+        
+        const docRef = await addDoc(collection(db,'listings'),formDataCopy);
 
         setLoading(false);
+
+        toast.success('Listing saved');
+        navigate(`/category/${formDataCopy.type}/${docRef}`);
     };
 
     const onMutate = (e) => {
