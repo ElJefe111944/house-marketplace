@@ -23,15 +23,31 @@ function Listing() {
 
             if(docSnap.exists()){
                 console.log(docSnap.data());
-                setListing(docSnap.data())
+                setListing(docSnap.data());
+
+                setLoading(false);
             }
         };
 
         fetchListing();
-    }, []);
+    }, [navigate, params.listingId]);
 
   return (
-    <div>Listing</div>
+    <main>
+      {/* Slider */}
+      <div className="shareIconDiv" onClick={() => {
+        navigator.clipboard.writeText(window.location.href);
+
+        setShareLinkCopied(true);
+        setTimeout(() => {
+          setShareLinkCopied(false);
+        }, 2000);
+      }}>
+        <img src={ShareIcon} alt="" />
+      </div>
+
+      {shareLinkCopied && <p className='linkCopied'>Link Copied!</p>}
+    </main>
   )
 }
 
