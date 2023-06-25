@@ -38,6 +38,7 @@ function Listing() {
       return <Spinner />
     };
 
+
   return (
     <main>
       {/* Slider */}
@@ -87,7 +88,23 @@ function Listing() {
         </ul>
         <p className="listingLocationTitle">Location</p>
         {/* map */}
+        <div className="leafletContainer">
+          <MapContainer 
+            style={{ height: '100%', width: '100%' }} 
+            center={[listing.geolocation._lat,listing.geolocation._long]}
+            zoom={13}
+            scrollWheelZoom={false}
+          >
+            <TileLayer 
+              attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>' 
+              url='https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+            />
 
+          <Marker position={[listing.geolocation._lat,listing.geolocation._long]}>
+            <Popup>{listing.location}</Popup>
+          </Marker>
+          </MapContainer>
+        </div>
         {auth.currentUser?.uid !== listing.userRef && (
           <Link to={`/contact/${listing.userRef}?listingName=${listing.name}`} className='primaryButton'>Contact Link</Link>
         )}
