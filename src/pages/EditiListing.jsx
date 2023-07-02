@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
-import { serverTimestamp, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { serverTimestamp, doc, updateDoc, getDoc, GeoPoint } from 'firebase/firestore';
 import { db } from '../firebase.config';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -190,7 +190,9 @@ function EditListing() {
             });
         };
 
-        const imgUrls = await Promise.all(
+        geolocation = new GeoPoint(latitude, longitude);
+
+        const imageUrls = await Promise.all(
             [...images].map((image) => storeImage(image))
         ).catch(() => {
             setLoading(false);
@@ -200,8 +202,11 @@ function EditListing() {
         
         const formDataCopy = {
             ...formData,
-            imgUrls,
-            geolocation,
+            imageUrls,
+            geolocation: {
+                _lat: geolocation.latitude,
+                _long: geolocation.longitude
+              },
             timestamp: serverTimestamp()
         };
 
@@ -218,7 +223,7 @@ function EditListing() {
         setLoading(false);
 
         toast.success('Listing saved');
-        navigate(`/category/${formDataCopy.type}/${docRef}`);
+        navigate(`/category/${formDataCopy.type}/${docRef.id}`);
     };
 
     const onMutate = (e) => {
